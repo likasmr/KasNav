@@ -103,6 +103,11 @@ input::placeholder {
     color: #888;
 }
 
+/* 添加CSS变量 */
+:root {
+    --custom-bg: url('https://img.likepoems.com/images/pc/3fbcf321ec8163df2bb2b13a4745fbd7f.jpg');
+}
+
 /* 新增背景样式 */
 body::before {
     content: '';
@@ -111,7 +116,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('https://img.likepoems.com/images/pc/3fbcf321ec8163df2bb2b13a4745fbd7f.jpg') no-repeat center/cover;
+    background: var(--custom-bg) no-repeat center/cover;
     z-index: -1;
     transition: filter 0.5s;
     will-change: filter;
@@ -238,6 +243,8 @@ body.blur-effect::before {
 
 /* 子菜单按钮 */
 .fab-menu {
+    flex-direction: column-reverse;
+    gap: 15px;
     display: flex;
     opacity: 0;
     visibility: hidden;

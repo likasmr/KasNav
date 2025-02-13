@@ -116,7 +116,7 @@
         window.onload = function() {
             const savedBg = localStorage.getItem('customBg');
             if(savedBg) {
-                document.body.style.backgroundImage = `url(${savedBg})`;
+                document.body.style.setProperty('--custom-bg', `url(${savedBg})`);
             }
         }
 
@@ -133,10 +133,18 @@
                 newLink.textContent = name;
                 newLink.innerHTML += '<span class="delete-btn" onclick="deleteLink(this)">×</span>';
 
-                const targetCategory = document.querySelector(`h2:contains('${category}')`).parentNode.querySelector('.links');
-                targetCategory.appendChild(newLink);
-                
-                saveLinks();
+                const categories = document.querySelectorAll('.category h2');
+                let targetCategory = null;
+                categories.forEach(cat => {
+                    if(cat.textContent === category) {
+                        targetCategory = cat.parentNode.querySelector('.links');
+                    }
+                });
+
+                if(targetCategory) {
+                    targetCategory.appendChild(newLink);
+                    saveLinks();
+                }
             }
         }
 
@@ -198,9 +206,7 @@
             if (!e.target.closest('.fab-container') && 
                 !e.target.closest('.popup-panel') &&
                 !e.target.closest('#link-manager')) {
-                // 仅关闭弹出面板，不操作fab-menu
-                document.getElementById('bg-control').style.display = 'none';
-                document.getElementById('link-manager').style.display = 'none';
+                closePanels();
             }
         });
 
