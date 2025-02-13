@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的导航站</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="parallax-wrapper">
+        <div class="parallax-layer" data-speed="0.1"></div>
+        <div class="parallax-layer" data-speed="0.3"></div>
+    </div>
+
+    <div class="fab-container">
+        <button class="fab-main" onclick="toggleFabMenu()">+</button>
+        <div class="fab-menu">
+            <button onclick="toggleEffect()">🎨 切换效果</button>
+            <button onclick="showBgControl()">🌅 更换背景</button>
+            <button onclick="toggleLinkManager()">📎 管理链接</button>
+        </div>
+    </div>
+
+    <div id="bg-control" class="popup-panel">
+        <h3>背景设置</h3>
+        <input type="text" id="bg-input" placeholder="图片URL">
+        <div class="button-group">
+            <button onclick="changeBackground()">应用</button>
+            <button onclick="resetBackground()">重置</button>
+            <button onclick="closePanels()">关闭</button>
+        </div>
+    </div>
+
+    <section id="link-manager" class="management-panel" style="display: none;">
+        <div class="panel-header" onclick="toggleLinkManager()">
+            <h2>链接管理 ▼</h2>
+        </div>
+        <div class="panel-content">
+            <div class="add-link-form">
+                <input type="text" id="link-name" placeholder="链接名称">
+                <input type="url" id="link-url" placeholder="链接地址">
+                <select id="link-category">
+                    <option value="常用工具">常用工具</option>
+                    <option value="开发资源">开发资源</option>
+                </select>
+                <button onclick="addLink()">添加链接</button>
+            </div>
+        </div>
+    </section>
+
+    <header>
+        <h1>每日导航</h1>
+        <div class="search-box">
+            <input type="text" placeholder="快速搜索...">
+            <button>🔍</button>
+        </div>
+    </header>
+    
+    <main>
+        <!-- 分类区块 -->
+        <section class="category">
+            <h2>常用工具</h2>
+            <div class="links">
+                <a href="https://www.baidu.com" target="_blank">百度搜索</a>
+                <a href="https://www.zhihu.com" target="_blank">知乎</a>
+                <a href="https://mail.qq.com" target="_blank">QQ邮箱</a>
+            </div>
+        </section>
+
+        <section class="category">
+            <h2>开发资源</h2>
+            <div class="links">
+                <a href="https://github.com" target="_blank">GitHub</a>
+                <a href="https://stackoverflow.com" target="_blank">Stack Overflow</a>
+                <a href="https://developer.mozilla.org" target="_blank">MDN Web Docs</a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 效果切换功能
+        function toggleEffect() {
+            document.body.classList.toggle('blur-effect');
+        }
+
+        // 简单搜索功能
+        document.querySelector('.search-box input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.links a').forEach(link => {
+                const text = link.textContent.toLowerCase();
+                link.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        // 背景切换功能
+        function changeBackground() {
+            const url = document.getElementById('bg-input').value;
+            if(url) {
+                document.body.style.backgroundImage = `url(${url})`;
+                localStorage.setItem('customBg', url);
+            }
+        }
+
+        function resetBackground() {
+            document.body.style.backgroundImage = '';
+            localStorage.removeItem('customBg');
+        }
+
+        // 初始化检查本地存储
+        window.onload = function() {
+            const savedBg = localStorage.getItem('customBg');
+            if(savedBg) {
+                document.body.style.backgroundImage = `url(${savedBg})`;
+            }
+        }
+
+        // 添加链接功能
+        function addLink() {
+            const name = document.getElementById('link-name').value;
+            const url = document.getElementById('link-url').value;
+            const category = document.getElementById('link-category').value;
+
+            if(name && url) {
+                const newLink = document.createElement('a');
+                newLink.href = url;
+                newLink.target = "_blank";
+                newLink.textContent = name;
+                newLink.innerHTML += '<span class="delete-btn" onclick="deleteLink(this)">×</span>';
+
+                const targetCategory = document.querySelector(`h2:contains('${category}')`).parentNode.querySelector('.links');
+                targetCategory.appendChild(newLink);
+                
+                saveLinks();
+            }
+        }
+
+        // 删除链接功能
+        function deleteLink(btn) {
+            btn.parentElement.remove();
+            saveLinks();
+        }
+
+        // 保存链接到本地存储
+        function saveLinks() {
+            const linksData = [];
+            document.querySelectorAll('.links a').forEach(link => {
+                linksData.push({
+                    name: link.textContent.replace('×', '').trim(),
+                    url: link.href,
+                    category: link.closest('.category').querySelector('h2').textContent
+                });
+            });
+            localStorage.setItem('navLinks', JSON.stringify(linksData));
+        }
+
+        // 加载保存的链接
+        window.onload = function() {
+            const savedLinks = localStorage.getItem('navLinks');
+            if(savedLinks) {
+                JSON.parse(savedLinks).forEach(link => {
+                    // 创建链接并添加到对应分类
+                });
+            }
+        }
+
+        // 浮动按钮菜单控制
+        function toggleFabMenu() {
+            document.querySelector('.fab-menu').style.display = 
+                document.querySelector('.fab-menu').style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function closePanels() {
+            document.getElementById('bg-control').style.display = 'none';
+            document.querySelector('.fab-menu').style.display = 'none';
+        }
+
+        // 背景控制面板
+        function showBgControl() {
+            document.getElementById('bg-control').style.display = 'block';
+            closePanels();
+        }
+
+        // 链接管理面板
+        function toggleLinkManager() {
+            const panel = document.getElementById('link-manager');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            closePanels();
+        }
+
+        // 点击外部关闭菜单
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.fab-container') && 
+                !e.target.closest('.popup-panel') &&
+                !e.target.closest('#link-manager')) {
+                closePanels();
+            }
+        });
+
+        // 视差滚动效果
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.parallax-layer').forEach(layer => {
+                const speed = parseFloat(layer.dataset.speed);
+                const yOffset = window.pageYOffset * speed;
+                layer.style.transform = `translateY(${yOffset}px)`;
+            });
+        });
+
+        // 滚动触发动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.category').forEach(category => {
+            observer.observe(category);
+        });
+    </script>
+</body>
+</html> 
