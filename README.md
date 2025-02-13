@@ -1,4 +1,4 @@
-# QiNav导航
+# KasNav
 
 ![GitHub](https://img.shields.io/github/license/yourusername/your-repo-name) 
 ![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/your-repo-name)
