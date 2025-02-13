@@ -13,11 +13,17 @@
     </div>
 
     <div class="fab-container">
-        <button class="fab-main" onclick="toggleFabMenu()">+</button>
+        <button class="fab-main">➕</button>
         <div class="fab-menu">
-            <button onclick="toggleEffect()">🎨 切换效果</button>
-            <button onclick="showBgControl()">🌅 更换背景</button>
-            <button onclick="toggleLinkManager()">📎 管理链接</button>
+            <button class="fab-item" onclick="toggleEffect()">
+                🎨<span>效果切换</span>
+            </button>
+            <button class="fab-item" onclick="showBgControl()">
+                🌅<span>更换背景</span>
+            </button>
+            <button class="fab-item" onclick="toggleLinkManager()">
+                📎<span>管理链接</span>
+            </button>
         </div>
     </div>
 
