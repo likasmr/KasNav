@@ -102,7 +102,7 @@
         function changeBackground() {
             const url = document.getElementById('bg-input').value;
             if(url) {
-                document.body.style.backgroundImage = `url(${url})`;
+                document.body.style.setProperty('--custom-bg', `url(${url})`);
                 localStorage.setItem('customBg', url);
             }
         }
@@ -177,7 +177,7 @@
 
         function closePanels() {
             document.getElementById('bg-control').style.display = 'none';
-            document.querySelector('.fab-menu').style.display = 'none';
+            document.getElementById('link-manager').style.display = 'none';
         }
 
         // 背景控制面板
@@ -198,7 +198,9 @@
             if (!e.target.closest('.fab-container') && 
                 !e.target.closest('.popup-panel') &&
                 !e.target.closest('#link-manager')) {
-                closePanels();
+                // 仅关闭弹出面板，不操作fab-menu
+                document.getElementById('bg-control').style.display = 'none';
+                document.getElementById('link-manager').style.display = 'none';
             }
         });
 

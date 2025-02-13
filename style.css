@@ -239,18 +239,18 @@ body.blur-effect::before {
 /* 子菜单按钮 */
 .fab-menu {
     display: flex;
-    flex-direction: column-reverse;
-    gap: 15px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
     transition: all 0.3s ease;
+    pointer-events: none;
 }
 
 .fab-container:hover .fab-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .fab-item {
